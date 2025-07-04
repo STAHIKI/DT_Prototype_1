@@ -33,25 +33,16 @@ export interface DigitalTwinGenerationResponse {
 }
 
 export async function generateDigitalTwin(request: DigitalTwinGenerationRequest): Promise<DigitalTwinGenerationResponse> {
-  const systemPrompt = `You are an expert digital twin architect. Based on the user's prompt, generate a comprehensive digital twin specification including:
-  - A descriptive name
-  - Detailed description
-  - Realistic dimensions appropriate for the type
-  - Suitable materials for construction
-  - Key features and capabilities
-  - Technical specifications relevant to the domain
+  const systemPrompt = `You are an expert digital twin architect. Based on the user's prompt, generate a comprehensive digital twin specification. 
 
   Respond with JSON in this exact format:
   {
     "name": "string",
     "description": "string", 
     "type": "string",
-    "properties": {
-      "dimensions": {"width": number, "height": number, "depth": number},
-      "materials": ["string"],
-      "features": ["string"],
-      "specifications": {}
-    }
+    "dimensions": {"width": number, "height": number, "depth": number},
+    "materials": ["string"],
+    "features": ["string"]
   }`;
 
   const userPrompt = `Generate a digital twin for: ${request.prompt}
@@ -73,32 +64,24 @@ export async function generateDigitalTwin(request: DigitalTwinGenerationRequest)
             name: { type: "string" },
             description: { type: "string" },
             type: { type: "string" },
-            properties: {
+            dimensions: {
               type: "object",
               properties: {
-                dimensions: {
-                  type: "object",
-                  properties: {
-                    width: { type: "number" },
-                    height: { type: "number" },
-                    depth: { type: "number" }
-                  },
-                  required: ["width", "height", "depth"]
-                },
-                materials: { 
-                  type: "array",
-                  items: { type: "string" }
-                },
-                features: { 
-                  type: "array",
-                  items: { type: "string" }
-                },
-                specifications: { type: "object" }
-              },
-              required: ["dimensions", "materials", "features", "specifications"]
+                width: { type: "number" },
+                height: { type: "number" },
+                depth: { type: "number" }
+              }
+            },
+            materials: { 
+              type: "array",
+              items: { type: "string" }
+            },
+            features: { 
+              type: "array",
+              items: { type: "string" }
             }
           },
-          required: ["name", "description", "type", "properties"]
+          required: ["name", "description", "type", "dimensions", "materials", "features"]
         }
       },
       contents: userPrompt,
@@ -107,7 +90,15 @@ export async function generateDigitalTwin(request: DigitalTwinGenerationRequest)
     const generated = JSON.parse(response.text || '{}');
     
     return {
-      ...generated,
+      name: generated.name,
+      description: generated.description,
+      type: generated.type,
+      properties: {
+        dimensions: generated.dimensions,
+        materials: generated.materials,
+        features: generated.features,
+        specifications: {}
+      },
       modelGeneration: {
         status: 'processing',
         estimatedTime: Math.floor(Math.random() * 10) + 5, // 5-15 minutes

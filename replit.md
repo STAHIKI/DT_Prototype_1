@@ -112,9 +112,10 @@ Stahiki is a comprehensive digital twin platform that enables users to create, m
 
 ### Development Environment
 - **Hot Reloading**: Vite dev server with Express middleware integration
-- **Database**: Local PostgreSQL or Neon development instance
-- **Environment Variables**: DATABASE_URL, OPENAI_API_KEY
+- **Database**: In-memory storage for development
+- **Environment Variables**: DATABASE_URL, GEMINI_API_KEY
 - **WebSocket**: Development server on same port as Express
+- **AI Integration**: Google Gemini API for twin generation and optimization
 
 ### Production Build
 - **Frontend**: Static assets built to dist/public
@@ -134,6 +135,11 @@ Stahiki is a comprehensive digital twin platform that enables users to create, m
 ```
 Changelog:
 - July 04, 2025. Initial setup
+- July 04, 2025. Switched from OpenAI to Google Gemini AI integration
+  * Updated all AI service functions to use Gemini-2.5-flash and Gemini-2.5-pro models
+  * Fixed component dependencies and simplified 3D model placeholders
+  * Successfully tested AI-powered digital twin generation with realistic specifications
+  * Application running smoothly with full API functionality verified
 ```
 
 ## User Preferences
